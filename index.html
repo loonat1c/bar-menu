@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Voyage Bar · Cocktail Menu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ocean-deep:  #0a1628;
+      --ocean-mid:   #0d2140;
+      --ocean-light: #122952;
+      --gold:        #c9a84c;
+      --gold-light:  #e8c96d;
+      --gold-dim:    #7a6030;
+      --foam:        #e8f0f7;
+      --foam-dim:    #8fa8c0;
+      --coral:       #e8624a;
+      --teal:        #2ec4b6;
+      --card-bg:     rgba(18, 41, 82, 0.85);
+      --card-border: rgba(201, 168, 76, 0.25);
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--ocean-deep);
+      color: var(--foam);
+      font-family: 'DM Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── WAVES BACKGROUND ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(46,196,182,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(201,168,76,0.08) 0%, transparent 50%),
+        linear-gradient(180deg, #0a1628 0%, #0d2140 40%, #091428 100%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* animated subtle wave */
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -60px; left: -10%;
+      width: 120%; height: 160px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 160'%3E%3Cpath fill='rgba(46,196,182,0.06)' d='M0,80 C360,160 720,0 1080,80 C1260,120 1380,60 1440,80 L1440,160 L0,160Z'/%3E%3C/svg%3E") repeat-x;
+      background-size: 1440px 160px;
+      animation: wave 12s linear infinite;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    @keyframes wave {
+      from { background-position-x: 0; }
+      to   { background-position-x: 1440px; }
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: relative;
+      z-index: 10;
+      padding: 48px 24px 24px;
+      text-align: center;
+    }
+
+    .header-icon {
+      font-size: 36px;
+      display: block;
+      margin-bottom: 10px;
+      animation: sway 4s ease-in-out infinite;
+    }
+
+    @keyframes sway {
+      0%, 100% { transform: rotate(-3deg); }
+      50%       { transform: rotate(3deg); }
+    }
+
+    .bar-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 38px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      line-height: 1.1;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold), #fff8e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .bar-tagline {
+      margin-top: 6px;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--foam-dim);
+    }
+
+    .header-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px auto;
+      max-width: 240px;
+    }
+    .header-divider::before,
+    .header-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+    }
+    .header-divider span {
+      font-size: 14px;
+      color: var(--gold);
+    }
+
+    /* ── FILTER TABS ── */
+    .filter-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: linear-gradient(180deg, var(--ocean-deep) 80%, transparent);
+      padding: 12px 0 8px;
+    }
+
+    .filter-scroll {
+      display: flex;
+      gap: 8px;
+      padding: 0 20px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .filter-scroll::-webkit-scrollbar { display: none; }
+
+    .filter-btn {
+      flex-shrink: 0;
+      padding: 7px 18px;
+      border-radius: 100px;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      color: var(--foam-dim);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: all 0.2s;
+      backdrop-filter: blur(8px);
+      white-space: nowrap;
+    }
+    .filter-btn.active {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--ocean-deep);
+      font-weight: 500;
+    }
+
+    /* ── GRID ── */
+    main {
+      position: relative;
+      z-index: 10;
+      padding: 16px 16px 100px;
+    }
+
+    .cocktail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    /* ── CARD ── */
+    .cocktail-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      animation: fadeUp 0.4s both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .cocktail-card:active {
+      transform: scale(0.97);
+    }
+
+    .cocktail-card.unavailable {
+      opacity: 0.45;
+    }
+
+    .card-img-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: var(--ocean-light);
+      overflow: hidden;
+    }
+
+    .card-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-img-placeholder {
+      width: 100%; height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      background: linear-gradient(135deg, var(--ocean-light), var(--ocean-mid));
+    }
+
+    .unavailable-badge {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10,22,40,0.6);
+      backdrop-filter: blur(2px);
+    }
+
+    .unavailable-badge span {
+      background: rgba(10,22,40,0.9);
+      color: var(--foam-dim);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 100px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .card-body {
+      padding: 10px 12px 12px;
+    }
+
+    .card-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--foam);
+      margin-bottom: 4px;
+    }
+
+    .card-volume {
+      font-size: 11px;
+      color: var(--foam-dim);
+      margin-bottom: 6px;
+    }
+
+    .card-price {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--gold-light);
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--foam-dim);
+    }
+
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    /* ── LOADER ── */
+    .loader {
+      position: fixed;
+      inset: 0;
+      background: var(--ocean-deep);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      gap: 16px;
+      transition: opacity 0.4s;
+    }
+
+    .loader.hidden { opacity: 0; pointer-events: none; }
+
+    .loader-icon { font-size: 48px; animation: sway 2s ease-in-out infinite; }
+
+    .loader-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .loader-dots span {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      animation: bounce 1.2s ease-in-out infinite;
+    }
+    .loader-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loader-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+      40%           { transform: scale(1.1); opacity: 1; }
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 12, 25, 0.85);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      display: flex;
+      align-items: flex-end;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      width: 100%;
+      max-height: 90vh;
+      background: var(--ocean-mid);
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      border-top: 1px solid var(--card-border);
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    .modal-overlay.open .modal {
+      transform: translateY(0);
+    }
+
+    .modal-handle {
+      width: 40px; height: 4px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 2px;
+      margin: 14px auto 0;
+    }
+
+    .modal-img {
+      width: 100%;
+      max-height: 280px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .modal-img-placeholder {
+      width: 100%;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      background: linear-gradient(135deg, var(--ocean-light), var(--ocean-deep));
+    }
+
+    .modal-content {
+      padding: 20px 24px 40px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 6px;
+    }
+
+    .modal-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 1.1;
+      flex: 1;
+      padding-right: 12px;
+    }
+
+    .modal-price {
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--gold-light);
+      white-space: nowrap;
+    }
+
+    .modal-volume {
+      font-size: 13px;
+      color: var(--foam-dim);
+      margin-bottom: 18px;
+    }
+
+    .modal-section-label {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 6px;
+      margin-top: 18px;
+    }
+
+    .modal-ingredients {
+      font-size: 14px;
+      color: var(--foam);
+      line-height: 1.6;
+    }
+
+    .allergen-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .allergen-tag {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      background: rgba(232, 98, 74, 0.15);
+      border: 1px solid rgba(232, 98, 74, 0.35);
+      color: #f08070;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 20px;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.08);
+      color: var(--foam);
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 20px;
+      font-size: 11px;
+      color: var(--gold-dim);
+      letter-spacing: 0.1em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loader -->
+  <div class="loader" id="loader">
+    <div class="loader-icon">⚓</div>
+    <div class="loader-dots">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <span class="header-icon">🚢</span>
+    <div class="bar-name">Voyage Bar</div>
+    <div class="bar-tagline">Cocktail Menu · At Sea</div>
+    <div class="header-divider"><span>⚓</span></div>
+  </header>
+
+  <!-- Category Filters -->
+  <div class="filter-wrap">
+    <div class="filter-scroll" id="filterScroll">
+      <button class="filter-btn active" data-cat="all">All</button>
+    </div>
+  </div>
+
+  <!-- Cocktail Grid -->
+  <main>
+    <div class="cocktail-grid" id="cocktailGrid">
+      <!-- populated by JS -->
+    </div>
+  </main>
+
+  <footer>Crafted with care · Drink responsibly</footer>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <div class="modal-handle"></div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { firebaseConfig } from "./firebase-config.js";
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    let allDrinks = [];
+    let currentCat = 'all';
+
+    // ── Load & subscribe ──────────────────────────────────────
+    const q = query(collection(db, 'cocktails'), orderBy('order', 'asc'));
+    onSnapshot(q, snap => {
+      allDrinks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      buildCategories();
+      renderGrid();
+      document.getElementById('loader').classList.add('hidden');
+    }, () => {
+      document.getElementById('loader').classList.add('hidden');
+    });
+
+    // ── Categories ────────────────────────────────────────────
+    function buildCategories() {
+      const cats = ['all', ...new Set(allDrinks.map(d => d.category).filter(Boolean))];
+      const scroll = document.getElementById('filterScroll');
+      scroll.innerHTML = '';
+      cats.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn' + (cat === currentCat ? ' active' : '');
+        btn.dataset.cat = cat;
+        btn.textContent = cat === 'all' ? 'All' : cat;
+        btn.onclick = () => {
+          currentCat = cat;
+          scroll.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+          renderGrid();
+        };
+        scroll.appendChild(btn);
+      });
+    }
+
+    // ── Render grid ───────────────────────────────────────────
+    function renderGrid() {
+      const grid = document.getElementById('cocktailGrid');
+      const filtered = currentCat === 'all'
+        ? allDrinks
+        : allDrinks.filter(d => d.category === currentCat);
+
+      if (!filtered.length) {
+        grid.innerHTML = `<div class="empty-state"><div class="icon">🍹</div><p>No cocktails available right now</p></div>`;
+        return;
+      }
+
+      grid.innerHTML = '';
+      filtered.forEach((drink, i) => {
+        const card = document.createElement('div');
+        card.className = 'cocktail-card' + (drink.available === false ? ' unavailable' : '');
+        card.style.animationDelay = `${i * 60}ms`;
+
+        const imgHtml = drink.imageUrl
+          ? `<img src="${drink.imageUrl}" alt="${drink.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'card-img-placeholder\\'>🍸</div>'" />`
+          : `<div class="card-img-placeholder">🍸</div>`;
+
+        const unavailableBadge = drink.available === false
+          ? `<div class="unavailable-badge"><span>Unavailable</span></div>`
+          : '';
+
+        card.innerHTML = `
+          <div class="card-img-wrap">
+            ${imgHtml}
+            ${unavailableBadge}
+          </div>
+          <div class="card-body">
+            <div class="card-name">${drink.name}</div>
+            <div class="card-volume">${drink.volume || ''}</div>
+            <div class="card-price">$${drink.price}</div>
+          </div>`;
+
+        card.onclick = () => openModal(drink);
+        grid.appendChild(card);
+      });
+    }
+
+    // ── Modal ─────────────────────────────────────────────────
+    function openModal(drink) {
+      const overlay = document.getElementById('modalOverlay');
+      const body    = document.getElementById('modalBody');
+
+      const imgHtml = drink.imageUrl
+        ? `<img class="modal-img" src="${drink.imageUrl}" alt="${drink.name}" />`
+        : `<div class="modal-img-placeholder">🍸</div>`;
+
+      const allergensHtml = (drink.allergens && drink.allergens.length)
+        ? `<div class="modal-section-label">Allergens</div>
+           <div class="allergen-tags">${drink.allergens.map(a => `<span class="allergen-tag">${a}</span>`).join('')}</div>`
+        : '';
+
+      const unavailableNote = drink.available === false
+        ? `<div style="margin-top:14px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.05);color:var(--foam-dim);font-size:13px;text-align:center;">Currently unavailable</div>`
+        : '';
+
+      body.innerHTML = `
+        ${imgHtml}
+        <div class="modal-content" style="position:relative;">
+          <div class="modal-header">
+            <div class="modal-name">${drink.name}</div>
+            <div class="modal-price">$${drink.price}</div>
+          </div>
+          <div class="modal-volume">${drink.volume || ''}</div>
+          ${drink.category ? `<div style="display:inline-block;font-size:11px;padding:2px 10px;border-radius:100px;border:1px solid var(--card-border);color:var(--foam-dim);margin-bottom:14px;">${drink.category}</div>` : ''}
+          <div class="modal-section-label">Ingredients</div>
+          <div class="modal-ingredients">${drink.ingredients || '—'}</div>
+          ${allergensHtml}
+          ${unavailableNote}
+        </div>`;
+
+      overlay.classList.add('open');
+    }
+
+    document.getElementById('modalOverlay').addEventListener('click', e => {
+      if (e.target === e.currentTarget) closeModal();
+    });
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+    }
+
+    // swipe down to close
+    let startY = 0;
+    document.getElementById('modal').addEventListener('touchstart', e => {
+      startY = e.touches[0].clientY;
+    }, { passive: true });
+    document.getElementById('modal').addEventListener('touchend', e => {
+      if (e.changedTouches[0].clientY - startY > 80) closeModal();
+    }, { passive: true });
+  </script>
+</body>
+</html>

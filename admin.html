@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bar Admin · Voyage</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0f1117;
+      --surface:   #1a1d27;
+      --surface2:  #232636;
+      --border:    rgba(255,255,255,0.08);
+      --gold:      #c9a84c;
+      --gold-l:    #e8c96d;
+      --text:      #e8eaf0;
+      --muted:     #7a7f94;
+      --danger:    #e8624a;
+      --success:   #2ec4b6;
+      --input-bg:  #13161f;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── LOGIN SCREEN ── */
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 360px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 32px;
+      text-align: center;
+    }
+
+    .login-icon { font-size: 40px; margin-bottom: 16px; }
+
+    .login-title {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .login-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .login-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 15px;
+      margin-bottom: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .login-input:focus { border-color: var(--gold); }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background: var(--gold);
+      color: #0f1117;
+      border: none;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+
+    .login-error {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--danger);
+      display: none;
+    }
+
+    /* ── ADMIN LAYOUT ── */
+    .admin-screen { display: none; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .topbar-brand span { font-size: 20px; }
+
+    .topbar-right { display: flex; gap: 8px; }
+
+    .btn-sm {
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      transition: all 0.2s;
+    }
+    .btn-sm:hover { border-color: var(--gold); color: var(--gold); }
+
+    .btn-gold {
+      background: var(--gold);
+      color: #0f1117;
+      border-color: var(--gold);
+    }
+    .btn-gold:hover { opacity: 0.88; color: #0f1117; }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      display: flex;
+      gap: 12px;
+      padding: 16px 20px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .stats-bar::-webkit-scrollbar { display: none; }
+
+    .stat-chip {
+      flex-shrink: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 16px;
+      text-align: center;
+      min-width: 80px;
+    }
+
+    .stat-num {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--gold-l);
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ── DRINK LIST ── */
+    .drink-list {
+      padding: 0 16px 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .drink-row {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .drink-row:hover { border-color: rgba(201,168,76,0.3); }
+
+    .drink-row.unavailable { opacity: 0.6; }
+
+    .drink-row-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+    }
+
+    .drink-thumb {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: var(--surface2);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      overflow: hidden;
+    }
+
+    .drink-thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .drink-info { flex: 1; min-width: 0; }
+
+    .drink-name {
+      font-size: 15px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .drink-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .drink-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    /* Toggle */
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+    .toggle input { display: none; }
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      border-radius: 100px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle input:checked + .toggle-track { background: var(--success); border-color: var(--success); }
+    .toggle-thumb {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: transform 0.2s, background 0.2s;
+      pointer-events: none;
+    }
+    .toggle input:checked ~ .toggle-thumb { transform: translateX(20px); background: #fff; }
+
+    .icon-btn {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 15px;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .icon-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .icon-btn.danger:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* ── MODAL / DRAWER ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5,8,15,0.8);
+      backdrop-filter: blur(4px);
+      z-index: 300;
+      display: flex;
+      align-items: flex-end;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-drawer {
+      width: 100%;
+      max-height: 92vh;
+      background: var(--surface);
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      border-top: 1px solid var(--border);
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+      padding-bottom: 32px;
+    }
+
+    .modal-overlay.open .modal-drawer { transform: translateY(0); }
+
+    .modal-handle {
+      width: 40px; height: 4px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      margin: 12px auto 0;
+    }
+
+    .modal-head {
+      padding: 16px 20px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title { font-size: 17px; font-weight: 600; }
+
+    .form-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 11px 14px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus { border-color: var(--gold); }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    /* image upload */
+    .img-upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .img-upload-area:hover { border-color: var(--gold); }
+
+    .img-upload-area input[type=file] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%; height: 100%;
+      padding: 0;
+      border: none;
+      background: none;
+    }
+
+    .img-preview {
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+      display: none;
+      margin-bottom: 8px;
+    }
+
+    .img-upload-icon { font-size: 28px; margin-bottom: 4px; }
+    .img-upload-hint { font-size: 12px; color: var(--muted); }
+
+    .form-footer {
+      padding: 0 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-danger {
+      background: transparent;
+      border: 1px solid var(--danger);
+      color: var(--danger);
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-danger:hover { opacity: 0.8; }
+
+    .btn-save {
+      flex: 1;
+      padding: 12px;
+      background: var(--gold);
+      color: #0f1117;
+      border: none;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-save:hover { opacity: 0.88; }
+    .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      z-index: 1000;
+      transition: transform 0.3s cubic-bezier(0.32,0.72,0,1);
+      pointer-events: none;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.success { border-color: rgba(46,196,182,0.4); color: var(--success); }
+    .toast.error   { border-color: rgba(232,98,74,0.4);  color: var(--danger); }
+
+    /* ── EMPTY ── */
+    .empty-admin {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+    .empty-admin .icon { font-size: 48px; margin-bottom: 12px; }
+
+    /* ── CATEGORY MANAGE ── */
+    .cat-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 100px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      margin: 3px;
+    }
+    .cat-chip button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN SCREEN -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div class="login-icon">🔐</div>
+      <div class="login-title">Bar Admin</div>
+      <div class="login-sub">Enter password to continue</div>
+      <input type="password" class="login-input" id="pwInput" placeholder="Password" />
+      <button class="btn-primary" id="loginBtn">Sign In</button>
+      <div class="login-error" id="loginError">Incorrect password</div>
+    </div>
+  </div>
+
+  <!-- ADMIN SCREEN -->
+  <div class="admin-screen" id="adminScreen">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+      <div class="topbar-brand"><span>🚢</span> Voyage Admin</div>
+      <div class="topbar-right">
+        <button class="btn-sm btn-gold" id="addBtn">+ Add</button>
+        <button class="btn-sm" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar" id="statsBar">
+      <div class="stat-chip"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Total</div></div>
+      <div class="stat-chip"><div class="stat-num" id="statActive">0</div><div class="stat-label">Available</div></div>
+      <div class="stat-chip"><div class="stat-num" id="statOff">0</div><div class="stat-label">Off</div></div>
+    </div>
+
+    <!-- List -->
+    <div class="drink-list" id="drinkList">
+      <div class="empty-admin"><div class="icon">🍹</div><p>No cocktails yet</p></div>
+    </div>
+  </div>
+
+  <!-- EDIT / ADD DRAWER -->
+  <div class="modal-overlay" id="drawerOverlay">
+    <div class="modal-drawer" id="drawer">
+      <div class="modal-handle"></div>
+      <div class="modal-head">
+        <div class="modal-title" id="drawerTitle">Add Cocktail</div>
+        <button class="icon-btn" id="closeDrawer">✕</button>
+      </div>
+
+      <div class="form-body">
+
+        <!-- Image upload -->
+        <div class="form-group">
+          <label>Photo</label>
+          <div class="img-upload-area" id="imgUploadArea">
+            <img class="img-preview" id="imgPreview" />
+            <input type="file" id="imgFile" accept="image/*" />
+            <div id="imgPlaceholder">
+              <div class="img-upload-icon">📷</div>
+              <div class="img-upload-hint">Tap to upload photo</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Name + Category -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Name *</label>
+            <input type="text" id="fName" placeholder="Mojito" />
+          </div>
+          <div class="form-group">
+            <label>Category</label>
+            <input type="text" id="fCategory" placeholder="Classics" list="catList" />
+            <datalist id="catList"></datalist>
+          </div>
+        </div>
+
+        <!-- Price + Volume -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Price ($) *</label>
+            <input type="number" id="fPrice" placeholder="12" min="0" step="0.5" />
+          </div>
+          <div class="form-group">
+            <label>Volume</label>
+            <input type="text" id="fVolume" placeholder="200 ml" />
+          </div>
+        </div>
+
+        <!-- Ingredients -->
+        <div class="form-group">
+          <label>Ingredients *</label>
+          <textarea id="fIngredients" rows="3" placeholder="White rum, lime juice, mint, sugar, soda"></textarea>
+        </div>
+
+        <!-- Allergens -->
+        <div class="form-group">
+          <label>Allergens (comma separated)</label>
+          <input type="text" id="fAllergens" placeholder="gluten, dairy, eggs" />
+        </div>
+
+        <!-- Sort Order -->
+        <div class="form-group">
+          <label>Sort order</label>
+          <input type="number" id="fOrder" placeholder="0" min="0" />
+        </div>
+
+      </div>
+
+      <div class="form-footer">
+        <button class="btn-danger" id="deleteBtn" style="display:none;">Delete</button>
+        <button class="btn-save" id="saveBtn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, query, orderBy, serverTimestamp }
+      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { firebaseConfig, ADMIN_PASSWORD } from "./firebase-config.js";
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    // ── IMAGE COMPRESS → base64 ───────────────────────────────
+    // Сжимает любое фото до max 800px и качества 0.75 (~100-200KB)
+    function compressImage(file, maxPx = 800, quality = 0.75) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = e => {
+          const img = new Image();
+          img.onerror = reject;
+          img.onload = () => {
+            let { width, height } = img;
+            if (width > maxPx || height > maxPx) {
+              if (width > height) { height = Math.round(height * maxPx / width); width = maxPx; }
+              else                { width = Math.round(width * maxPx / height);  height = maxPx; }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width  = width;
+            canvas.height = height;
+            canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // ── AUTH ──────────────────────────────────────────────────
+    let authed = false;
+
+    document.getElementById('pwInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') tryLogin();
+    });
+
+    document.getElementById('loginBtn').addEventListener('click', tryLogin);
+
+    function tryLogin() {
+      const pw = document.getElementById('pwInput').value;
+      if (pw === ADMIN_PASSWORD) {
+        authed = true;
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('adminScreen').style.display = 'block';
+        startListening();
+      } else {
+        document.getElementById('loginError').style.display = 'block';
+        document.getElementById('pwInput').value = '';
+      }
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      authed = false;
+      document.getElementById('adminScreen').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+    });
+
+    // ── DATA ──────────────────────────────────────────────────
+    let drinks = [];
+    let editingId = null;
+    let newImageFile = null;
+
+    function startListening() {
+      const q = query(collection(db, 'cocktails'), orderBy('order', 'asc'));
+      onSnapshot(q, snap => {
+        drinks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderList();
+        updateStats();
+        updateCatDatalist();
+      });
+    }
+
+    function updateStats() {
+      const total  = drinks.length;
+      const active = drinks.filter(d => d.available !== false).length;
+      document.getElementById('statTotal').textContent  = total;
+      document.getElementById('statActive').textContent = active;
+      document.getElementById('statOff').textContent    = total - active;
+    }
+
+    function updateCatDatalist() {
+      const cats = [...new Set(drinks.map(d => d.category).filter(Boolean))];
+      const dl   = document.getElementById('catList');
+      dl.innerHTML = cats.map(c => `<option value="${c}">`).join('');
+    }
+
+    // ── RENDER LIST ───────────────────────────────────────────
+    function renderList() {
+      const list = document.getElementById('drinkList');
+      if (!drinks.length) {
+        list.innerHTML = `<div class="empty-admin"><div class="icon">🍹</div><p>No cocktails yet. Tap + Add to start.</p></div>`;
+        return;
+      }
+
+      list.innerHTML = '';
+      drinks.forEach(drink => {
+        const row = document.createElement('div');
+        row.className = 'drink-row' + (drink.available === false ? ' unavailable' : '');
+
+        const thumbHtml = drink.imageUrl
+          ? `<div class="drink-thumb"><img src="${drink.imageUrl}" /></div>`
+          : `<div class="drink-thumb">🍸</div>`;
+
+        row.innerHTML = `
+          <div class="drink-row-main">
+            ${thumbHtml}
+            <div class="drink-info">
+              <div class="drink-name">${drink.name}</div>
+              <div class="drink-meta">$${drink.price}${drink.volume ? ' · ' + drink.volume : ''}${drink.category ? ' · ' + drink.category : ''}</div>
+            </div>
+            <div class="drink-actions">
+              <label class="toggle">
+                <input type="checkbox" ${drink.available !== false ? 'checked' : ''} data-id="${drink.id}" />
+                <div class="toggle-track"></div>
+                <div class="toggle-thumb"></div>
+              </label>
+              <button class="icon-btn" data-edit="${drink.id}">✏️</button>
+            </div>
+          </div>`;
+
+        // toggle availability
+        row.querySelector('[data-id]').addEventListener('change', async e => {
+          const available = e.target.checked;
+          await updateDoc(doc(db, 'cocktails', drink.id), { available });
+          showToast(available ? '✅ Available' : '⛔ Unavailable', available ? 'success' : '');
+        });
+
+        // edit
+        row.querySelector('[data-edit]').addEventListener('click', () => openEditor(drink));
+
+        list.appendChild(row);
+      });
+    }
+
+    // ── DRAWER ────────────────────────────────────────────────
+    document.getElementById('addBtn').addEventListener('click', () => openEditor(null));
+    document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
+    document.getElementById('drawerOverlay').addEventListener('click', e => {
+      if (e.target === e.currentTarget) closeDrawer();
+    });
+
+    function openEditor(drink) {
+      editingId    = drink ? drink.id : null;
+      newImageFile = null;
+
+      document.getElementById('drawerTitle').textContent = drink ? 'Edit Cocktail' : 'Add Cocktail';
+      document.getElementById('fName').value        = drink?.name        || '';
+      document.getElementById('fCategory').value    = drink?.category    || '';
+      document.getElementById('fPrice').value       = drink?.price       || '';
+      document.getElementById('fVolume').value      = drink?.volume      || '';
+      document.getElementById('fIngredients').value = drink?.ingredients || '';
+      document.getElementById('fAllergens').value   = (drink?.allergens || []).join(', ');
+      document.getElementById('fOrder').value       = drink?.order       ?? '';
+      document.getElementById('deleteBtn').style.display = drink ? 'block' : 'none';
+
+      // image preview
+      const preview = document.getElementById('imgPreview');
+      const ph      = document.getElementById('imgPlaceholder');
+      if (drink?.imageUrl) {
+        preview.src = drink.imageUrl;
+        preview.style.display = 'block';
+        ph.style.display = 'none';
+      } else {
+        preview.style.display = 'none';
+        ph.style.display      = 'block';
+      }
+      document.getElementById('imgFile').value = '';
+
+      document.getElementById('drawerOverlay').classList.add('open');
+    }
+
+    function closeDrawer() {
+      document.getElementById('drawerOverlay').classList.remove('open');
+    }
+
+    // ── IMAGE PREVIEW (с компрессией) ────────────────────────
+    document.getElementById('imgFile').addEventListener('change', async e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      newImageFile = file;
+      const preview = document.getElementById('imgPreview');
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = 'block';
+      document.getElementById('imgPlaceholder').style.display = 'none';
+    });
+
+    // ── SAVE ──────────────────────────────────────────────────
+    document.getElementById('saveBtn').addEventListener('click', async () => {
+      const name = document.getElementById('fName').value.trim();
+      const price = parseFloat(document.getElementById('fPrice').value);
+
+      if (!name || isNaN(price)) {
+        showToast('⚠️ Name and price required', 'error');
+        return;
+      }
+
+      const saveBtn = document.getElementById('saveBtn');
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving…';
+
+      try {
+        let imageUrl = null;
+
+        // сохраняем текущее фото если редактируем
+        if (editingId) {
+          const existing = drinks.find(d => d.id === editingId);
+          imageUrl = existing?.imageUrl || null;
+        }
+
+        // сжимаем новое фото в base64 и сохраняем прямо в Firestore
+        if (newImageFile) {
+          saveBtn.textContent = 'Compressing…';
+          imageUrl = await compressImage(newImageFile);
+        }
+
+        const allergens = document.getElementById('fAllergens').value
+          .split(',')
+          .map(a => a.trim())
+          .filter(Boolean);
+
+        const data = {
+          name,
+          price,
+          category:    document.getElementById('fCategory').value.trim(),
+          volume:      document.getElementById('fVolume').value.trim(),
+          ingredients: document.getElementById('fIngredients').value.trim(),
+          allergens,
+          order:       parseInt(document.getElementById('fOrder').value) || 0,
+          ...(imageUrl ? { imageUrl } : {}),
+        };
+
+        if (editingId) {
+          await updateDoc(doc(db, 'cocktails', editingId), data);
+          showToast('✅ Updated', 'success');
+        } else {
+          data.available = true;
+          data.createdAt = serverTimestamp();
+          await addDoc(collection(db, 'cocktails'), data);
+          showToast('✅ Added', 'success');
+        }
+
+        closeDrawer();
+      } catch (err) {
+        console.error(err);
+        showToast('❌ Error: ' + err.message, 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save';
+      }
+    });
+
+    // ── DELETE ────────────────────────────────────────────────
+    document.getElementById('deleteBtn').addEventListener('click', async () => {
+      if (!editingId) return;
+      if (!confirm('Delete this cocktail? This cannot be undone.')) return;
+      await deleteDoc(doc(db, 'cocktails', editingId));
+      showToast('🗑️ Deleted', '');
+      closeDrawer();
+    });
+
+    // ── TOAST ─────────────────────────────────────────────────
+    let toastTimer;
+    function showToast(msg, type = '') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast' + (type ? ' ' + type : '');
+      requestAnimationFrame(() => t.classList.add('show'));
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>
