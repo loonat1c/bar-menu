@@ -606,6 +606,12 @@
           <textarea id="fIngredients" rows="3" placeholder="White rum, lime juice, mint, sugar, soda"></textarea>
         </div>
 
+        <!-- Description -->
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="fDescription" rows="2" placeholder="A refreshing tropical blend with hints of citrus..."></textarea>
+        </div>
+
         <!-- Allergens -->
         <div class="form-group">
           <label>Allergens (comma separated)</label>
@@ -788,6 +794,7 @@
       document.getElementById('fPrice').value       = drink?.price       || '';
       document.getElementById('fVolume').value      = drink?.volume      || '';
       document.getElementById('fIngredients').value = drink?.ingredients || '';
+      document.getElementById('fDescription').value  = drink?.description  || '';
       document.getElementById('fAllergens').value   = (drink?.allergens || []).join(', ');
       document.getElementById('fOrder').value       = drink?.order       ?? '';
       document.getElementById('deleteBtn').style.display = drink ? 'block' : 'none';
@@ -862,7 +869,8 @@
           price,
           category:    document.getElementById('fCategory').value.trim(),
           volume:      document.getElementById('fVolume').value.trim(),
-          ingredients: document.getElementById('fIngredients').value.trim(),
+          ingredients:  document.getElementById('fIngredients').value.trim(),
+          description:  document.getElementById('fDescription').value.trim(),
           allergens,
           order:       parseInt(document.getElementById('fOrder').value) || 0,
           ...(imageUrl ? { imageUrl } : {}),
