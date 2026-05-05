@@ -5,23 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <title>Voyage Bar · Cocktail Menu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --ocean-deep:  #0a1628;
-      --ocean-mid:   #0d2140;
-      --ocean-light: #122952;
-      --gold:        #c9a84c;
-      --gold-light:  #e8c96d;
-      --gold-dim:    #7a6030;
-      --foam:        #e8f0f7;
-      --foam-dim:    #8fa8c0;
-      --coral:       #e8624a;
-      --teal:        #2ec4b6;
-      --card-bg:     rgba(18, 41, 82, 0.85);
-      --card-border: rgba(201, 168, 76, 0.25);
+      --ocean-deep:  #07111f;
+      --ocean-mid:   #0b1d35;
+      --ocean-light: #0f2544;
+      --gold:        #c5974a;
+      --gold-light:  #e2b96a;
+      --gold-pale:   #f0d898;
+      --gold-dim:    #6b5128;
+      --foam:        #dde8f2;
+      --foam-dim:    #7a96b0;
+      --coral:       #e05a42;
+      --teal:        #1db8a8;
+      --card-bg:     rgba(11, 29, 53, 0.9);
+      --card-border: rgba(197, 151, 74, 0.2);
     }
 
     html, body {
@@ -33,32 +34,31 @@
       overflow-x: hidden;
     }
 
-    /* ── WAVES BACKGROUND ── */
+    /* ── BACKGROUND ── */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(46,196,182,0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(201,168,76,0.08) 0%, transparent 50%),
-        linear-gradient(180deg, #0a1628 0%, #0d2140 40%, #091428 100%);
+        radial-gradient(ellipse 100% 55% at 50% 0%, rgba(29,184,168,0.09) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 45% at 90% 90%, rgba(197,151,74,0.07) 0%, transparent 55%),
+        linear-gradient(180deg, #07111f 0%, #0b1d35 50%, #060e1a 100%);
       z-index: 0;
       pointer-events: none;
     }
 
-    /* animated subtle wave */
+    /* animated wave */
     body::after {
       content: '';
       position: fixed;
-      bottom: -60px; left: -10%;
-      width: 120%; height: 160px;
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 160'%3E%3Cpath fill='rgba(46,196,182,0.06)' d='M0,80 C360,160 720,0 1080,80 C1260,120 1380,60 1440,80 L1440,160 L0,160Z'/%3E%3C/svg%3E") repeat-x;
-      background-size: 1440px 160px;
-      animation: wave 12s linear infinite;
+      bottom: -40px; left: -10%;
+      width: 120%; height: 140px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 140'%3E%3Cpath fill='rgba(29,184,168,0.055)' d='M0,70 C240,140 480,0 720,70 C960,140 1200,20 1440,70 L1440,140 L0,140Z'/%3E%3C/svg%3E") repeat-x;
+      background-size: 1440px 140px;
+      animation: wave 14s linear infinite;
       z-index: 0;
       pointer-events: none;
     }
-
     @keyframes wave {
       from { background-position-x: 0; }
       to   { background-position-x: 1440px; }
@@ -68,59 +68,86 @@
     header {
       position: relative;
       z-index: 10;
-      padding: 48px 24px 24px;
+      padding: 52px 24px 20px;
       text-align: center;
     }
 
-    .header-icon {
-      font-size: 36px;
+    /* SVG Emblem */
+    .emblem {
       display: block;
-      margin-bottom: 10px;
-      animation: sway 4s ease-in-out infinite;
+      margin: 0 auto 18px;
+      width: 96px;
+      height: 96px;
+      filter: drop-shadow(0 0 18px rgba(197,151,74,0.35));
+      animation: emblem-float 5s ease-in-out infinite;
     }
 
-    @keyframes sway {
-      0%, 100% { transform: rotate(-3deg); }
-      50%       { transform: rotate(3deg); }
+    @keyframes emblem-float {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-5px); }
     }
 
-    .bar-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 38px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      line-height: 1.1;
-      background: linear-gradient(135deg, var(--gold-light), var(--gold), #fff8e1);
+    .bar-wordmark {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .bar-name-top {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.85;
+    }
+
+    .bar-name-main {
+      font-family: 'Playfair Display', serif;
+      font-size: 42px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      line-height: 1;
+      background: linear-gradient(160deg, var(--gold-pale) 0%, var(--gold-light) 40%, var(--gold) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
-    .bar-tagline {
-      margin-top: 6px;
-      font-size: 12px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
+    .bar-name-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 15px;
+      font-weight: 300;
+      letter-spacing: 0.12em;
       color: var(--foam-dim);
+      margin-top: 3px;
     }
 
-    .header-divider {
+    .header-ornament {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin: 20px auto;
-      max-width: 240px;
+      gap: 10px;
+      margin: 18px auto 0;
+      max-width: 220px;
     }
-    .header-divider::before,
-    .header-divider::after {
+    .header-ornament::before,
+    .header-ornament::after {
       content: '';
       flex: 1;
       height: 1px;
-      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+      background: linear-gradient(90deg, transparent, var(--gold-dim));
     }
-    .header-divider span {
-      font-size: 14px;
-      color: var(--gold);
+    .header-ornament::after {
+      background: linear-gradient(90deg, var(--gold-dim), transparent);
+    }
+    .ornament-diamond {
+      width: 6px; height: 6px;
+      background: var(--gold);
+      transform: rotate(45deg);
+      opacity: 0.7;
     }
 
     /* ── FILTER TABS ── */
@@ -128,8 +155,8 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      background: linear-gradient(180deg, var(--ocean-deep) 80%, transparent);
-      padding: 12px 0 8px;
+      background: linear-gradient(180deg, var(--ocean-deep) 75%, transparent);
+      padding: 14px 0 10px;
     }
 
     .filter-scroll {
@@ -174,7 +201,7 @@
     .cocktail-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
+      gap: 12px;
     }
 
     /* ── CARD ── */
@@ -184,24 +211,19 @@
       border-radius: 16px;
       overflow: hidden;
       backdrop-filter: blur(12px);
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
       animation: fadeUp 0.4s both;
     }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
+      from { opacity: 0; transform: translateY(14px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    .cocktail-card:active {
-      transform: scale(0.97);
-    }
-
-    .cocktail-card.unavailable {
-      opacity: 0.45;
-    }
+    .cocktail-card:active { transform: scale(0.97); }
+    .cocktail-card.unavailable { opacity: 0.4; }
 
     .card-img-wrap {
       position: relative;
@@ -215,6 +237,7 @@
       width: 100%; height: 100%;
       object-fit: cover;
       display: block;
+      transition: transform 0.3s;
     }
 
     .card-img-placeholder {
@@ -222,7 +245,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 40px;
+      font-size: 38px;
       background: linear-gradient(135deg, var(--ocean-light), var(--ocean-mid));
     }
 
@@ -232,12 +255,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(10,22,40,0.6);
+      background: rgba(7,17,31,0.65);
       backdrop-filter: blur(2px);
     }
 
     .unavailable-badge span {
-      background: rgba(10,22,40,0.9);
+      background: rgba(7,17,31,0.9);
       color: var(--foam-dim);
       font-size: 10px;
       letter-spacing: 0.12em;
@@ -252,10 +275,10 @@
     }
 
     .card-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 16px;
-      font-weight: 600;
-      line-height: 1.2;
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.25;
       color: var(--foam);
       margin-bottom: 4px;
     }
@@ -263,7 +286,7 @@
     .card-volume {
       font-size: 11px;
       color: var(--foam-dim);
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
 
     .card-price {
@@ -279,7 +302,6 @@
       padding: 60px 20px;
       color: var(--foam-dim);
     }
-
     .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
     .empty-state p { font-size: 14px; }
 
@@ -293,21 +315,20 @@
       align-items: center;
       justify-content: center;
       z-index: 1000;
-      gap: 16px;
-      transition: opacity 0.4s;
+      gap: 20px;
+      transition: opacity 0.5s;
     }
-
     .loader.hidden { opacity: 0; pointer-events: none; }
 
-    .loader-icon { font-size: 48px; animation: sway 2s ease-in-out infinite; }
-
-    .loader-dots {
-      display: flex;
-      gap: 6px;
+    .loader-emblem {
+      width: 64px; height: 64px;
+      filter: drop-shadow(0 0 12px rgba(197,151,74,0.4));
+      animation: emblem-float 3s ease-in-out infinite;
     }
 
+    .loader-dots { display: flex; gap: 6px; }
     .loader-dots span {
-      width: 6px; height: 6px;
+      width: 5px; height: 5px;
       border-radius: 50%;
       background: var(--gold);
       animation: bounce 1.2s ease-in-out infinite;
@@ -316,7 +337,7 @@
     .loader-dots span:nth-child(3) { animation-delay: 0.4s; }
 
     @keyframes bounce {
-      0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+      0%, 80%, 100% { transform: scale(0.5); opacity: 0.3; }
       40%           { transform: scale(1.1); opacity: 1; }
     }
 
@@ -324,8 +345,8 @@
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(5, 12, 25, 0.85);
-      backdrop-filter: blur(6px);
+      background: rgba(4, 10, 20, 0.88);
+      backdrop-filter: blur(8px);
       z-index: 200;
       display: flex;
       align-items: flex-end;
@@ -333,7 +354,6 @@
       pointer-events: none;
       transition: opacity 0.3s;
     }
-
     .modal-overlay.open {
       opacity: 1;
       pointer-events: all;
@@ -341,123 +361,155 @@
 
     .modal {
       width: 100%;
-      max-height: 90vh;
-      background: var(--ocean-mid);
+      max-height: 93vh;
+      background: linear-gradient(180deg, var(--ocean-light) 0%, var(--ocean-mid) 30%);
       border-top-left-radius: 24px;
       border-top-right-radius: 24px;
-      border-top: 1px solid var(--card-border);
+      border-top: 1px solid rgba(197,151,74,0.3);
       overflow-y: auto;
       transform: translateY(100%);
-      transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+      transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+      -webkit-overflow-scrolling: touch;
     }
-
-    .modal-overlay.open .modal {
-      transform: translateY(0);
-    }
+    .modal-overlay.open .modal { transform: translateY(0); }
 
     .modal-handle {
-      width: 40px; height: 4px;
-      background: rgba(255,255,255,0.15);
+      width: 36px; height: 4px;
+      background: rgba(255,255,255,0.12);
       border-radius: 2px;
-      margin: 14px auto 0;
+      margin: 12px auto 0;
+    }
+
+    /* Фото — без обрезки, полная высота */
+    .modal-img-wrap {
+      position: relative;
+      width: 100%;
+      margin-top: 10px;
+      background: var(--ocean-deep);
     }
 
     .modal-img {
       width: 100%;
-      max-height: 280px;
-      object-fit: cover;
+      max-height: 420px;
+      object-fit: contain;
       display: block;
     }
 
     .modal-img-placeholder {
       width: 100%;
-      height: 200px;
+      height: 220px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 64px;
+      font-size: 72px;
       background: linear-gradient(135deg, var(--ocean-light), var(--ocean-deep));
     }
 
     .modal-content {
-      padding: 20px 24px 40px;
+      padding: 22px 24px 48px;
     }
 
-    .modal-header {
+    .modal-top-row {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 6px;
+      gap: 12px;
+      margin-bottom: 4px;
     }
 
     .modal-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 28px;
-      font-weight: 600;
+      font-family: 'Playfair Display', serif;
+      font-size: 30px;
+      font-weight: 700;
       line-height: 1.1;
       flex: 1;
-      padding-right: 12px;
     }
 
     .modal-price {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 500;
       color: var(--gold-light);
       white-space: nowrap;
+      padding-top: 4px;
+    }
+
+    .modal-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
     }
 
     .modal-volume {
       font-size: 13px;
       color: var(--foam-dim);
-      margin-bottom: 18px;
+    }
+
+    .modal-cat-badge {
+      font-size: 11px;
+      padding: 2px 10px;
+      border-radius: 100px;
+      border: 1px solid var(--card-border);
+      color: var(--foam-dim);
+    }
+
+    .modal-divider {
+      height: 1px;
+      background: linear-gradient(90deg, var(--card-border), transparent);
+      margin: 14px 0;
+    }
+
+    .modal-description {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 17px;
+      font-weight: 300;
+      color: var(--foam);
+      line-height: 1.65;
+      margin-bottom: 4px;
     }
 
     .modal-section-label {
       font-size: 10px;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--gold-dim);
-      margin-bottom: 6px;
+      margin-bottom: 7px;
       margin-top: 18px;
     }
 
     .modal-ingredients {
       font-size: 14px;
       color: var(--foam);
-      line-height: 1.6;
+      line-height: 1.65;
     }
 
     .allergen-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin-top: 6px;
+      margin-top: 7px;
     }
 
     .allergen-tag {
       font-size: 11px;
       padding: 3px 10px;
       border-radius: 100px;
-      background: rgba(232, 98, 74, 0.15);
-      border: 1px solid rgba(232, 98, 74, 0.35);
-      color: #f08070;
+      background: rgba(224, 90, 66, 0.12);
+      border: 1px solid rgba(224, 90, 66, 0.3);
+      color: #e88070;
     }
 
-    .modal-close {
-      position: absolute;
-      top: 14px;
-      right: 20px;
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.15);
-      background: rgba(255,255,255,0.08);
-      color: var(--foam);
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 10;
+    .unavailable-note {
+      margin-top: 16px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.04);
+      color: var(--foam-dim);
+      font-size: 13px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.06);
     }
 
     /* ── FOOTER ── */
@@ -476,18 +528,74 @@
 
   <!-- Loader -->
   <div class="loader" id="loader">
-    <div class="loader-icon">⚓</div>
-    <div class="loader-dots">
-      <span></span><span></span><span></span>
-    </div>
+    <svg class="loader-emblem" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="48" cy="48" r="46" stroke="#c5974a" stroke-width="1" stroke-dasharray="4 4" opacity="0.4"/>
+      <circle cx="48" cy="48" r="38" stroke="#c5974a" stroke-width="0.5" opacity="0.25"/>
+      <path d="M48 18 L48 78" stroke="#c5974a" stroke-width="1.2" opacity="0.5"/>
+      <path d="M28 34 Q48 20 68 34" stroke="#c5974a" stroke-width="1.8" fill="none"/>
+      <path d="M22 50 Q35 38 48 42 Q61 46 74 34" stroke="#e2b96a" stroke-width="1.4" fill="none" opacity="0.7"/>
+      <path d="M20 60 L76 60 L68 72 L28 72 Z" fill="#c5974a" opacity="0.15" stroke="#c5974a" stroke-width="1"/>
+      <circle cx="48" cy="18" r="3" fill="#e2b96a"/>
+      <path d="M30 72 Q48 80 66 72" stroke="#c5974a" stroke-width="1" fill="none" opacity="0.5"/>
+    </svg>
+    <div class="loader-dots"><span></span><span></span><span></span></div>
   </div>
 
   <!-- Header -->
   <header>
-    <span class="header-icon">🚢</span>
-    <div class="bar-name">Voyage Bar</div>
-    <div class="bar-tagline">Cocktail Menu · At Sea</div>
-    <div class="header-divider"><span>⚓</span></div>
+    <!-- SVG Emblem -->
+    <svg class="emblem" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- outer ring -->
+      <circle cx="48" cy="48" r="46" stroke="url(#gold-ring)" stroke-width="1" stroke-dasharray="3 5" opacity="0.5"/>
+      <!-- inner ring -->
+      <circle cx="48" cy="48" r="38" stroke="#c5974a" stroke-width="0.5" opacity="0.3"/>
+      <!-- mast -->
+      <line x1="48" y1="14" x2="48" y2="78" stroke="#c5974a" stroke-width="1.5" opacity="0.6"/>
+      <!-- upper sail -->
+      <path d="M48 16 Q72 26 68 38 Q58 32 48 32 Z" fill="url(#sail-grad)" opacity="0.85"/>
+      <!-- lower sail -->
+      <path d="M48 33 Q66 42 62 52 Q55 47 48 47 Z" fill="url(#sail-grad2)" opacity="0.7"/>
+      <!-- hull -->
+      <path d="M22 62 L74 62 L66 74 L30 74 Z" fill="url(#hull-grad)" stroke="#c5974a" stroke-width="0.8"/>
+      <!-- waves under hull -->
+      <path d="M18 76 Q33 72 48 76 Q63 80 78 76" stroke="#1db8a8" stroke-width="1.5" fill="none" opacity="0.6"/>
+      <path d="M22 80 Q37 77 48 80 Q59 83 74 80" stroke="#1db8a8" stroke-width="1" fill="none" opacity="0.35"/>
+      <!-- top ornament -->
+      <circle cx="48" cy="14" r="2.5" fill="#e2b96a"/>
+      <!-- crow's nest -->
+      <rect x="44" y="26" width="8" height="5" rx="1" fill="#c5974a" opacity="0.4"/>
+      <!-- crossbar -->
+      <line x1="36" y1="44" x2="60" y2="44" stroke="#c5974a" stroke-width="1" opacity="0.4"/>
+      <defs>
+        <linearGradient id="gold-ring" x1="0" y1="0" x2="96" y2="96" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#e2b96a"/>
+          <stop offset="100%" stop-color="#c5974a"/>
+        </linearGradient>
+        <linearGradient id="sail-grad" x1="48" y1="16" x2="70" y2="38" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#e2b96a"/>
+          <stop offset="100%" stop-color="#c5974a" stop-opacity="0.6"/>
+        </linearGradient>
+        <linearGradient id="sail-grad2" x1="48" y1="33" x2="64" y2="52" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#c5974a"/>
+          <stop offset="100%" stop-color="#c5974a" stop-opacity="0.4"/>
+        </linearGradient>
+        <linearGradient id="hull-grad" x1="22" y1="62" x2="74" y2="74" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#c5974a" stop-opacity="0.3"/>
+          <stop offset="50%" stop-color="#e2b96a" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#c5974a" stop-opacity="0.3"/>
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <div class="bar-wordmark">
+      <div class="bar-name-top">Est. at Sea</div>
+      <div class="bar-name-main">VOYAGE</div>
+      <div class="bar-name-sub">Cocktail Bar</div>
+    </div>
+
+    <div class="header-ornament">
+      <div class="ornament-diamond"></div>
+    </div>
   </header>
 
   <!-- Category Filters -->
@@ -499,12 +607,10 @@
 
   <!-- Cocktail Grid -->
   <main>
-    <div class="cocktail-grid" id="cocktailGrid">
-      <!-- populated by JS -->
-    </div>
+    <div class="cocktail-grid" id="cocktailGrid"></div>
   </main>
 
-  <footer>Crafted with care · Drink responsibly</footer>
+  <footer>Crafted with care &nbsp;·&nbsp; Drink responsibly</footer>
 
   <!-- Detail Modal -->
   <div class="modal-overlay" id="modalOverlay">
@@ -517,16 +623,15 @@
   <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
     import { firebaseConfig } from "./firebase-config.js";
 
     const app = initializeApp(firebaseConfig);
     const db  = getFirestore(app);
 
-    let allDrinks = [];
+    let allDrinks  = [];
     let currentCat = 'all';
 
-    // ── Load & subscribe ──────────────────────────────────────
     const q = query(collection(db, 'cocktails'), orderBy('order', 'asc'));
     onSnapshot(q, snap => {
       allDrinks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -537,7 +642,6 @@
       document.getElementById('loader').classList.add('hidden');
     });
 
-    // ── Categories ────────────────────────────────────────────
     function buildCategories() {
       const cats = ['all', ...new Set(allDrinks.map(d => d.category).filter(Boolean))];
       const scroll = document.getElementById('filterScroll');
@@ -556,7 +660,6 @@
       });
     }
 
-    // ── Render grid ───────────────────────────────────────────
     function renderGrid() {
       const grid = document.getElementById('cocktailGrid');
       const filtered = currentCat === 'all'
@@ -572,21 +675,18 @@
       filtered.forEach((drink, i) => {
         const card = document.createElement('div');
         card.className = 'cocktail-card' + (drink.available === false ? ' unavailable' : '');
-        card.style.animationDelay = `${i * 60}ms`;
+        card.style.animationDelay = `${i * 55}ms`;
 
         const imgHtml = drink.imageUrl
           ? `<img src="${drink.imageUrl}" alt="${drink.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'card-img-placeholder\\'>🍸</div>'" />`
           : `<div class="card-img-placeholder">🍸</div>`;
 
-        const unavailableBadge = drink.available === false
+        const badge = drink.available === false
           ? `<div class="unavailable-badge"><span>Unavailable</span></div>`
           : '';
 
         card.innerHTML = `
-          <div class="card-img-wrap">
-            ${imgHtml}
-            ${unavailableBadge}
-          </div>
+          <div class="card-img-wrap">${imgHtml}${badge}</div>
           <div class="card-body">
             <div class="card-name">${drink.name}</div>
             <div class="card-volume">${drink.volume || ''}</div>
@@ -598,14 +698,18 @@
       });
     }
 
-    // ── Modal ─────────────────────────────────────────────────
     function openModal(drink) {
       const overlay = document.getElementById('modalOverlay');
       const body    = document.getElementById('modalBody');
 
       const imgHtml = drink.imageUrl
-        ? `<img class="modal-img" src="${drink.imageUrl}" alt="${drink.name}" />`
+        ? `<div class="modal-img-wrap"><img class="modal-img" src="${drink.imageUrl}" alt="${drink.name}" /></div>`
         : `<div class="modal-img-placeholder">🍸</div>`;
+
+      const descHtml = drink.description
+        ? `<div class="modal-divider"></div>
+           <div class="modal-description">${drink.description}</div>`
+        : '';
 
       const allergensHtml = (drink.allergens && drink.allergens.length)
         ? `<div class="modal-section-label">Allergens</div>
@@ -613,18 +717,20 @@
         : '';
 
       const unavailableNote = drink.available === false
-        ? `<div style="margin-top:14px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.05);color:var(--foam-dim);font-size:13px;text-align:center;">Currently unavailable</div>`
-        : '';
+        ? `<div class="unavailable-note">Currently unavailable</div>` : '';
 
       body.innerHTML = `
         ${imgHtml}
-        <div class="modal-content" style="position:relative;">
-          <div class="modal-header">
+        <div class="modal-content">
+          <div class="modal-top-row">
             <div class="modal-name">${drink.name}</div>
             <div class="modal-price">$${drink.price}</div>
           </div>
-          <div class="modal-volume">${drink.volume || ''}</div>
-          ${drink.category ? `<div style="display:inline-block;font-size:11px;padding:2px 10px;border-radius:100px;border:1px solid var(--card-border);color:var(--foam-dim);margin-bottom:14px;">${drink.category}</div>` : ''}
+          <div class="modal-meta">
+            ${drink.volume ? `<span class="modal-volume">${drink.volume}</span>` : ''}
+            ${drink.category ? `<span class="modal-cat-badge">${drink.category}</span>` : ''}
+          </div>
+          ${descHtml}
           <div class="modal-section-label">Ingredients</div>
           <div class="modal-ingredients">${drink.ingredients || '—'}</div>
           ${allergensHtml}
@@ -632,6 +738,7 @@
         </div>`;
 
       overlay.classList.add('open');
+      document.getElementById('modal').scrollTop = 0;
     }
 
     document.getElementById('modalOverlay').addEventListener('click', e => {
@@ -642,7 +749,6 @@
       document.getElementById('modalOverlay').classList.remove('open');
     }
 
-    // swipe down to close
     let startY = 0;
     document.getElementById('modal').addEventListener('touchstart', e => {
       startY = e.touches[0].clientY;
