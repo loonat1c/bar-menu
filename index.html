@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>Voyage Bar · Cocktail Menu</title>
+  <title>Cornucopia Cruise Line · Cocktail Menu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
@@ -155,9 +155,11 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      background: linear-gradient(180deg, var(--ocean-deep) 75%, transparent);
-      padding: 20px 0 16px;
-      margin-top: 12px;
+      background: var(--ocean-deep);
+      padding: 14px 0;
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
     }
 
     .filter-scroll {
@@ -171,6 +173,7 @@
       align-items: center;
       flex-wrap: wrap;
       row-gap: 6px;
+      width: 100%;
     }
     .filter-scroll.scrollable {
       justify-content: flex-start;
@@ -611,8 +614,7 @@
     </svg>
 
     <div class="bar-wordmark">
-      <div class="bar-name-top">Est. at Sea</div>
-      <div class="bar-name-main">VOYAGE</div>
+      <div class="bar-name-main">CORNUCOPIA</div>
       <div class="bar-name-sub">Cocktail Bar</div>
     </div>
 
