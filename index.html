@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>Cornucopia Cruise Line · Cocktail Menu</title>
+  <title>Voyage Bar · Cocktail Menu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
@@ -380,49 +380,38 @@
     }
     .modal-overlay.open .modal { transform: translateY(0); }
 
-    .modal-top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      padding: 12px 16px 4px;
-    }
-
     .modal-close-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 10;
       width: 32px; height: 32px;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.15);
-      background: rgba(255,255,255,0.08);
-      color: var(--foam);
-      font-size: 16px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(6px);
+      color: #fff;
+      font-size: 15px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
       transition: background 0.2s;
-      flex-shrink: 0;
     }
-    .modal-close-btn:active { background: rgba(255,255,255,0.18); }
+    .modal-close-btn:active { background: rgba(0,0,0,0.7); }
 
-    .modal-handle {
-      width: 36px; height: 4px;
-      background: rgba(255,255,255,0.12);
-      border-radius: 2px;
-      margin: 12px auto 0;
-    }
+    .modal-handle { display: none; }
 
-    /* Фото — без обрезки, полная высота */
     .modal-img-wrap {
       position: relative;
       width: 100%;
-      margin-top: 10px;
-      background: var(--ocean-deep);
     }
 
     .modal-img {
       width: 100%;
-      max-height: 420px;
-      object-fit: contain;
+      height: 340px;
+      object-fit: cover;
       display: block;
     }
 
@@ -619,7 +608,8 @@
     </svg>
 
     <div class="bar-wordmark">
-      <div class="bar-name-main">CORNUCOPIA</div>
+      <div class="bar-name-top">Est. at Sea</div>
+      <div class="bar-name-main">VOYAGE</div>
       <div class="bar-name-sub">Cocktail Bar</div>
     </div>
 
@@ -645,9 +635,6 @@
   <!-- Detail Modal -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal" id="modal">
-      <div class="modal-top-bar">
-        <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close">✕</button>
-      </div>
       <div id="modalBody"></div>
     </div>
   </div>
@@ -735,9 +722,11 @@
       const overlay = document.getElementById('modalOverlay');
       const body    = document.getElementById('modalBody');
 
+      const closeBtnHtml = `<button class="modal-close-btn" id="modalCloseBtn" aria-label="Close">✕</button>`;
+
       const imgHtml = drink.imageUrl
-        ? `<div class="modal-img-wrap"><img class="modal-img" src="${drink.imageUrl}" alt="${drink.name}" /></div>`
-        : `<div class="modal-img-placeholder">🍸</div>`;
+        ? `<div class="modal-img-wrap">${closeBtnHtml}<img class="modal-img" src="${drink.imageUrl}" alt="${drink.name}" /></div>`
+        : `<div class="modal-img-placeholder" style="position:relative;">${closeBtnHtml}🍸</div>`;
 
       const descHtml = drink.description
         ? `<div class="modal-divider"></div>
@@ -790,10 +779,12 @@
       modalOpen = false;
     }
 
-    // Кнопка ✕
-    document.getElementById('modalCloseBtn').addEventListener('click', () => {
-      if (modalOpen) history.back();
-      else closeModal();
+    // Кнопка ✕ — делегирование, т.к. кнопка пересоздаётся при каждом открытии
+    document.getElementById('modal').addEventListener('click', e => {
+      if (e.target.closest('#modalCloseBtn')) {
+        if (modalOpen) history.back();
+        else closeModal();
+      }
     });
 
     // Тап по overlay
