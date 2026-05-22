@@ -156,7 +156,8 @@
       top: 0;
       z-index: 50;
       background: linear-gradient(180deg, var(--ocean-deep) 75%, transparent);
-      padding: 14px 0 10px;
+      padding: 20px 0 16px;
+      margin-top: 12px;
     }
 
     .filter-scroll {
@@ -167,6 +168,7 @@
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
       justify-content: center;
+      align-items: center;
       flex-wrap: wrap;
       row-gap: 6px;
     }
@@ -410,9 +412,10 @@
 
     .modal-img {
       width: 100%;
-      height: 340px;
-      object-fit: cover;
+      max-height: 380px;
+      object-fit: contain;
       display: block;
+      background: var(--ocean-deep);
     }
 
     .modal-img-placeholder {
