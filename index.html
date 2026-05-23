@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>Cornucopia Cruise Line · Cocktail Menu</title>
+  <title>Coronucopia Cruise Line · Cocktail Menu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
@@ -307,6 +307,12 @@
       color: var(--gold-light);
     }
 
+    .card-price-bottle {
+      font-size: 11px;
+      color: var(--foam-dim);
+      margin-top: 2px;
+    }
+
     /* ── EMPTY STATE ── */
     .empty-state {
       grid-column: 1 / -1;
@@ -451,12 +457,34 @@
       flex: 1;
     }
 
+    .modal-price-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 3px;
+      flex-shrink: 0;
+      padding-top: 4px;
+    }
+
     .modal-price {
       font-size: 24px;
       font-weight: 500;
       color: var(--gold-light);
       white-space: nowrap;
-      padding-top: 4px;
+    }
+
+    .modal-price-bottle {
+      font-size: 13px;
+      color: var(--foam-dim);
+      white-space: nowrap;
+    }
+
+    .price-label {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.6;
+      margin-right: 2px;
     }
 
     .modal-meta {
@@ -614,7 +642,7 @@
     </svg>
 
     <div class="bar-wordmark">
-      <div class="bar-name-main">CORNUCOPIA</div>
+      <div class="bar-name-main">CORONUCOPIA</div>
       <div class="bar-name-sub">Cocktail Bar</div>
     </div>
 
@@ -716,6 +744,7 @@
             <div class="card-name">${drink.name}</div>
             <div class="card-volume">${drink.volume || ''}</div>
             <div class="card-price">$${drink.price}</div>
+            ${drink.priceBottle ? `<div class="card-price-bottle">Bottle $${drink.priceBottle}</div>` : ''}
           </div>`;
 
         card.onclick = () => openModal(drink);
@@ -751,10 +780,14 @@
         <div class="modal-content">
           <div class="modal-top-row">
             <div class="modal-name">${drink.name}</div>
-            <div class="modal-price">$${drink.price}</div>
+            <div class="modal-price-wrap">
+              <div class="modal-price"><span class="price-label">glass</span>$${drink.price}</div>
+              ${drink.priceBottle ? `<div class="modal-price-bottle"><span class="price-label">bottle</span>$${drink.priceBottle}</div>` : ''}
+            </div>
           </div>
           <div class="modal-meta">
             ${drink.volume ? `<span class="modal-volume">${drink.volume}</span>` : ''}
+            ${drink.volumeBottle ? `<span class="modal-volume">${drink.volumeBottle} btl</span>` : ''}
             ${drink.category ? `<span class="modal-cat-badge">${drink.category}</span>` : ''}
           </div>
           ${descHtml}
