@@ -591,12 +591,22 @@
         <!-- Price + Volume -->
         <div class="form-row">
           <div class="form-group">
-            <label>Price ($) *</label>
+            <label>Glass price ($) *</label>
             <input type="number" id="fPrice" placeholder="12" min="0" step="0.5" />
           </div>
           <div class="form-group">
-            <label>Volume</label>
+            <label>Bottle price ($)</label>
+            <input type="number" id="fPriceBottle" placeholder="90" min="0" step="1" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Volume (glass)</label>
             <input type="text" id="fVolume" placeholder="200 ml" />
+          </div>
+          <div class="form-group">
+            <label>Volume (bottle)</label>
+            <input type="text" id="fVolumeBottle" placeholder="750 ml" />
           </div>
         </div>
 
@@ -604,6 +614,12 @@
         <div class="form-group">
           <label>Ingredients *</label>
           <textarea id="fIngredients" rows="3" placeholder="White rum, lime juice, mint, sugar, soda"></textarea>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="fDescription" rows="2" placeholder="A refreshing tropical blend with hints of citrus..."></textarea>
         </div>
 
         <!-- Allergens -->
@@ -745,7 +761,7 @@
             ${thumbHtml}
             <div class="drink-info">
               <div class="drink-name">${drink.name}</div>
-              <div class="drink-meta">$${drink.price}${drink.volume ? ' · ' + drink.volume : ''}${drink.category ? ' · ' + drink.category : ''}</div>
+              <div class="drink-meta">Glass $${drink.price}${drink.priceBottle ? ' &nbsp;·&nbsp; Bottle $' + drink.priceBottle : ''}${drink.category ? ' · ' + drink.category : ''}</div>
             </div>
             <div class="drink-actions">
               <label class="toggle">
@@ -786,8 +802,11 @@
       document.getElementById('fName').value        = drink?.name        || '';
       document.getElementById('fCategory').value    = drink?.category    || '';
       document.getElementById('fPrice').value       = drink?.price       || '';
-      document.getElementById('fVolume').value      = drink?.volume      || '';
+      document.getElementById('fVolume').value        = drink?.volume        || '';
+      document.getElementById('fPriceBottle').value  = drink?.priceBottle  || '';
+      document.getElementById('fVolumeBottle').value = drink?.volumeBottle || '';
       document.getElementById('fIngredients').value = drink?.ingredients || '';
+      document.getElementById('fDescription').value  = drink?.description  || '';
       document.getElementById('fAllergens').value   = (drink?.allergens || []).join(', ');
       document.getElementById('fOrder').value       = drink?.order       ?? '';
       document.getElementById('deleteBtn').style.display = drink ? 'block' : 'none';
@@ -861,8 +880,11 @@
           name,
           price,
           category:    document.getElementById('fCategory').value.trim(),
-          volume:      document.getElementById('fVolume').value.trim(),
-          ingredients: document.getElementById('fIngredients').value.trim(),
+          volume:       document.getElementById('fVolume').value.trim(),
+          priceBottle:  parseFloat(document.getElementById('fPriceBottle').value) || null,
+          volumeBottle: document.getElementById('fVolumeBottle').value.trim(),
+          ingredients:  document.getElementById('fIngredients').value.trim(),
+          description:  document.getElementById('fDescription').value.trim(),
           allergens,
           order:       parseInt(document.getElementById('fOrder').value) || 0,
           ...(imageUrl ? { imageUrl } : {}),
