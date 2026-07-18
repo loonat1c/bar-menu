@@ -583,7 +583,7 @@
           </div>
           <div class="form-group">
             <label>Category</label>
-            <input type="text" id="fCategory" placeholder="Classics" list="catList" />
+            <input type="text" id="fCategory" placeholder="Cocktails" list="catList" />
             <datalist id="catList"></datalist>
           </div>
         </div>
@@ -733,10 +733,13 @@
       document.getElementById('statOff').textContent    = total - active;
     }
 
+    const SUGGESTED_CATS = ['Specials', 'Sodas', 'Cocktails', 'Virgin Cocktails', 'Beer', 'Wine', 'Spirits'];
+
     function updateCatDatalist() {
-      const cats = [...new Set(drinks.map(d => d.category).filter(Boolean))];
-      const dl   = document.getElementById('catList');
-      dl.innerHTML = cats.map(c => `<option value="${c}">`).join('');
+      const found = [...new Set(drinks.map(d => d.category).filter(Boolean))];
+      const all   = [...new Set([...SUGGESTED_CATS, ...found])];
+      const dl    = document.getElementById('catList');
+      dl.innerHTML = all.map(c => `<option value="${c}">`).join('');
     }
 
     // ── RENDER LIST ───────────────────────────────────────────
