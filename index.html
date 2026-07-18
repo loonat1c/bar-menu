@@ -1319,13 +1319,25 @@
     let currentCat = 'all';
 
     const q = query(collection(db, 'cocktails'), orderBy('order', 'asc'));
+    // Таймаут — если Firebase не ответил за 6 сек, скрываем лоадер
+    const loaderTimeout = setTimeout(() => {
+      document.getElementById('loader').classList.add('hidden');
+      document.getElementById('cocktailGrid').innerHTML =
+        '<div class="empty-state"><div class="icon">⚓</div><p>Could not connect. Check your internet connection and reload.</p></div>';
+    }, 6000);
+
     onSnapshot(q, snap => {
+      clearTimeout(loaderTimeout);
       allDrinks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       buildCategories();
       renderGrid();
       document.getElementById('loader').classList.add('hidden');
-    }, () => {
+    }, (err) => {
+      clearTimeout(loaderTimeout);
+      console.error('Firebase error:', err);
       document.getElementById('loader').classList.add('hidden');
+      document.getElementById('cocktailGrid').innerHTML =
+        '<div class="empty-state"><div class="icon">⚓</div><p>Error: ' + err.message + '</p></div>';
     });
 
     const CAT_ORDER = ['Specials', 'Sodas', 'Cocktails', 'Virgin Cocktails', 'Beer', 'Wine', 'Spirits'];
