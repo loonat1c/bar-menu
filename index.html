@@ -1382,7 +1382,7 @@
         card.style.animationDelay = (i * 55) + 'ms';
 
         const imgHtml = drink.imageUrl
-          ? '<img src="' + drink.imageUrl + '" alt="' + drink.name + '" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'card-img-placeholder\'>🍸</div>'" />'
+          ? '<img src="' + drink.imageUrl + '" alt="' + drink.name + '" loading="lazy" onerror="this.style.display='none'" />'
           : '<div class="card-img-placeholder">🍸</div>';
 
         const badge = drink.available === false
