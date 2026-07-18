@@ -1371,7 +1371,7 @@
         : allDrinks.filter(d => d.category === currentCat);
 
       if (!filtered.length) {
-        grid.innerHTML = `<div class="empty-state"><div class="icon">🍹</div><p>No cocktails available right now</p></div>`;
+        grid.innerHTML = '<div class="empty-state"><div class="icon">🍹</div><p>No cocktails available right now</p></div>';
         return;
       }
 
@@ -1379,24 +1379,26 @@
       filtered.forEach((drink, i) => {
         const card = document.createElement('div');
         card.className = 'cocktail-card' + (drink.available === false ? ' unavailable' : '');
-        card.style.animationDelay = `${i * 55}ms`;
+        card.style.animationDelay = (i * 55) + 'ms';
 
         const imgHtml = drink.imageUrl
-          ? `<img src="${drink.imageUrl}" alt="${drink.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'card-img-placeholder\\'>🍸</div>'" />`
-          : `<div class="card-img-placeholder">🍸</div>`;
+          ? '<img src="' + drink.imageUrl + '" alt="' + drink.name + '" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'card-img-placeholder\'>🍸</div>'" />'
+          : '<div class="card-img-placeholder">🍸</div>';
 
         const badge = drink.available === false
-          ? `<div class="unavailable-badge"><span>Unavailable</span></div>`
+          ? '<div class="unavailable-badge"><span>Unavailable</span></div>'
           : '';
 
-        card.innerHTML = `
-          <div class="card-img-wrap">${imgHtml}${badge}</div>
-          <div class="card-body">
-            <div class="card-name">${drink.name}</div>
-            <div class="card-volume">${drink.volume || ''}</div>
-            <div class="card-price">$${drink.price}</div>
-            ${drink.priceBottle ? `<div class="card-price-bottle">Bottle $${drink.priceBottle}</div>` : ''}
-          </div>`;
+        const bottlePriceCard = drink.priceBottle
+          ? '<div class="card-price-bottle">Bottle $' + drink.priceBottle + '</div>' : '';
+        card.innerHTML =
+          '<div class="card-img-wrap">' + imgHtml + badge + '</div>' +
+          '<div class="card-body">' +
+            '<div class="card-name">' + drink.name + '</div>' +
+            '<div class="card-volume">' + (drink.volume || '') + '</div>' +
+            '<div class="card-price">$' + drink.price + '</div>' +
+            bottlePriceCard +
+          '</div>';
 
         card.onclick = () => openModal(drink);
         grid.appendChild(card);
@@ -1407,55 +1409,63 @@
       const overlay = document.getElementById('modalOverlay');
       const body    = document.getElementById('modalBody');
 
-      const closeBtnHtml = `<button class="modal-close-btn" id="modalCloseBtn" aria-label="Close">✕</button>`;
-
+      const closeBtnHtml = '<button class="modal-close-btn" id="modalCloseBtn" aria-label="Close">✕</button>';
       const imgHtml = drink.imageUrl
-        ? `<div class="modal-img-wrap">${closeBtnHtml}<img class="modal-img" src="${drink.imageUrl}" alt="${drink.name}" /></div>`
-        : `<div class="modal-img-placeholder" style="position:relative;">${closeBtnHtml}🍸</div>`;
+        ? '<div class="modal-img-wrap">' + closeBtnHtml + '<img class="modal-img" src="' + drink.imageUrl + '" alt="' + drink.name + '" /></div>'
+        : '<div class="modal-img-placeholder" style="position:relative;">' + closeBtnHtml + '🍸</div>';
 
       const descHtml = drink.description
-        ? `<div class="modal-divider"></div>
-           <div class="modal-description">${drink.description}</div>`
+        ? '<div class="modal-divider"></div><div class="modal-description">' + drink.description + '</div>'
         : '';
 
       const allergensHtml = (drink.allergens && drink.allergens.length)
-        ? `<div class="modal-section-label">Allergens</div>
-           <div class="allergen-tags">${drink.allergens.map(a => `<span class="allergen-tag">${a}</span>`).join('')}</div>`
+        ? '<div class="modal-section-label">Allergens</div>' +
+          '<div class="allergen-tags">' + drink.allergens.map(function(a) { return '<span class="allergen-tag">' + a + '</span>'; }).join('') + '</div>'
         : '';
 
       const unavailableNote = drink.available === false
-        ? `<div class="unavailable-note">Currently unavailable</div>` : '';
+        ? '<div class="unavailable-note">Currently unavailable</div>' : '';
 
-      body.innerHTML = `
-        ${imgHtml}
-        <div class="modal-content">
-          <div class="modal-top-row">
-            <div class="modal-name">${drink.name}</div>
-            <div class="modal-price-wrap">
-              <div class="modal-price"><span class="price-label">glass</span>$${drink.price}</div>
-              ${drink.priceBottle ? `<div class="modal-price-bottle"><span class="price-label">bottle</span>$${drink.priceBottle}</div>` : ''}
-            </div>
-          </div>
-          <div class="modal-meta">
-            ${drink.volume ? `<span class="modal-volume">${drink.volume}</span>` : ''}
-            ${drink.volumeBottle ? `<span class="modal-volume">${drink.volumeBottle} btl</span>` : ''}
-            ${drink.category ? `<span class="modal-cat-badge">${drink.category}</span>` : ''}
-          </div>
-          ${descHtml}
-          <div class="modal-section-label">Ingredients</div>
-          <div class="modal-ingredients">${drink.ingredients || '—'}</div>
-          ${allergensHtml}
-          ${drink.category === 'Spirits' ? `
-          <div class="modal-section-label">Serving options</div>
-          <div class="spirits-options">
-            <div class="spirit-opt"><span>On the Rocks</span><span class="spirit-price">$12</span></div>
-            <div class="spirit-opt"><span>Neat</span><span class="spirit-price">$12</span></div>
-            <div class="spirit-opt"><span>Shot</span><span class="spirit-price">$10</span></div>
-            <div class="spirit-opt"><span>Mix</span><span class="spirit-price">$14</span></div>
-            <div class="spirit-opt"><span>Double</span><span class="spirit-price">$18</span></div>
-          </div>` : ''}
-          ${unavailableNote}
-        </div>`;
+      const priceBottleHtml = drink.priceBottle
+        ? '<div class="modal-price-bottle"><span class="price-label">bottle</span>$' + drink.priceBottle + '</div>' : '';
+
+      const volumeHtml = drink.volume
+        ? '<span class="modal-volume">' + drink.volume + '</span>' : '';
+
+      const volumeBottleHtml = drink.volumeBottle
+        ? '<span class="modal-volume">' + drink.volumeBottle + ' btl</span>' : '';
+
+      const catBadgeHtml = drink.category
+        ? '<span class="modal-cat-badge">' + drink.category + '</span>' : '';
+
+      const spiritsHtml = drink.category === 'Spirits'
+        ? '<div class="modal-section-label">Serving options</div>' +
+          '<div class="spirits-options">' +
+            '<div class="spirit-opt"><span>On the Rocks</span><span class="spirit-price">$12</span></div>' +
+            '<div class="spirit-opt"><span>Neat</span><span class="spirit-price">$12</span></div>' +
+            '<div class="spirit-opt"><span>Shot</span><span class="spirit-price">$10</span></div>' +
+            '<div class="spirit-opt"><span>Mix</span><span class="spirit-price">$14</span></div>' +
+            '<div class="spirit-opt"><span>Double</span><span class="spirit-price">$18</span></div>' +
+          '</div>' : '';
+
+      body.innerHTML =
+        imgHtml +
+        '<div class="modal-content">' +
+          '<div class="modal-top-row">' +
+            '<div class="modal-name">' + drink.name + '</div>' +
+            '<div class="modal-price-wrap">' +
+              '<div class="modal-price"><span class="price-label">glass</span>$' + drink.price + '</div>' +
+              priceBottleHtml +
+            '</div>' +
+          '</div>' +
+          '<div class="modal-meta">' + volumeHtml + volumeBottleHtml + catBadgeHtml + '</div>' +
+          descHtml +
+          '<div class="modal-section-label">Ingredients</div>' +
+          '<div class="modal-ingredients">' + (drink.ingredients || '—') + '</div>' +
+          allergensHtml +
+          spiritsHtml +
+          unavailableNote +
+        '</div>';
 
       openModalOverlay();
       document.getElementById('modal').scrollTop = 0;
