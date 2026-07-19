@@ -2,7 +2,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
     import { getFirestore, collection, onSnapshot, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
     import { firebaseConfig } from "./firebase-config.js";
 
-    const app = initializeApp(firebaseConfig);
+document.addEventListener('DOMContentLoaded', function() {
+const app = initializeApp(firebaseConfig);
     const db  = getFirestore(app);
 
     let allDrinks  = [];
@@ -211,3 +212,4 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
         else closeModal();
       }
     }, { passive: true });
+});
