@@ -2,7 +2,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
     import { getFirestore, collection, onSnapshot, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
     import { firebaseConfig } from "./firebase-config.js";
 
-document.addEventListener('DOMContentLoaded', function() {
 const app = initializeApp(firebaseConfig);
     const db  = getFirestore(app);
 
@@ -20,9 +19,13 @@ const app = initializeApp(firebaseConfig);
 
     onSnapshot(q, snap => {
       clearTimeout(loaderTimeout);
-      allDrinks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      buildCategories();
-      renderGrid();
+      try {
+        allDrinks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        buildCategories();
+        renderGrid();
+      } catch(e) {
+        console.error('Render error:', e);
+      }
       document.getElementById('loader').classList.add('hidden');
     }, (err) => {
       clearTimeout(loaderTimeout);
@@ -212,4 +215,3 @@ const app = initializeApp(firebaseConfig);
         else closeModal();
       }
     }, { passive: true });
-});
