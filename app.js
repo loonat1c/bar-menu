@@ -120,6 +120,12 @@ const app = initializeApp(firebaseConfig);
       const unavailableNote = drink.available === false
         ? '<div class="unavailable-note">Currently unavailable</div>' : '';
 
+      // For Spirits show "from $X" using minimum serving price ($10 shot)
+      const spiritsMinPrice = 10;
+      const glassPriceHtml = drink.category === 'Spirits'
+        ? '<div class="modal-price"><span class="price-label">from</span>$' + spiritsMinPrice + '</div>'
+        : '<div class="modal-price"><span class="price-label">glass</span>$' + drink.price + '</div>';
+
       const priceBottleHtml = drink.priceBottle
         ? '<div class="modal-price-bottle"><span class="price-label">bottle</span>$' + drink.priceBottle + '</div>' : '';
 
@@ -148,7 +154,7 @@ const app = initializeApp(firebaseConfig);
           '<div class="modal-top-row">' +
             '<div class="modal-name">' + drink.name + '</div>' +
             '<div class="modal-price-wrap">' +
-              '<div class="modal-price"><span class="price-label">glass</span>$' + drink.price + '</div>' +
+              glassPriceHtml +
               priceBottleHtml +
             '</div>' +
           '</div>' +
